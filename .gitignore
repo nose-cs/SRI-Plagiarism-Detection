@@ -1,0 +1,6 @@
+src/gui/media/documentos
+src/gui/db.sqlite3
+src/gui/__pycache__
+src/gui/plagiarism_detection/__pycache__
+src/gui/detection/__pycache__
+src/gui/detection/migrations/__pycache__

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados de Detección de Plagio</title>
+    <style>
+        .document {
+            width: 45%;
+            display: inline-block;
+            vertical-align: top;
+            margin: 2%;
+        }
+        .resaltado {
+            background-color: #ffcccc;
+        }
+        .resaltadoYellow {
+            background-color: #ffff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="document" id="doc1">
+        {{ doc1_text|safe }}
+    </div>
+    <div class="document" id="doc2">
+        {{ doc2_text|safe }}
+    </div>
+
+</body>
+</html>
