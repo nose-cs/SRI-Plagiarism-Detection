@@ -2,29 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Resultados de Detección de Plagio</title>
+    <title>Plagiarism Detection Results</title>
+    <link src="./font.css" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
         .document {
-            width: 45%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 46%;
             display: inline-block;
             vertical-align: top;
-            margin: 2%;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: auto;
+            overflow-y: auto;
+            max-height: 80vh;
         }
         .resaltado {
             background-color: #ffcccc;
+            padding: 0 4px;
+            border-radius: 4px;
         }
         .resaltadoYellow {
             background-color: #ffff00;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+        @media (max-width: 768px) {
+            .document {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="document" id="doc1">
-        {{ doc1_text|safe }}
+    <div class="container">
+        <div class="document" id="doc1">
+            <h3>{{ doc1_name }}</h3>
+            {{ doc1_text|safe }}
+        </div>
+        <div class="document" id="doc2">
+            <h3>{{ doc2_name }}</h3>
+            {{ doc2_text|safe }}
+        </div>
     </div>
-    <div class="document" id="doc2">
-        {{ doc2_text|safe }}
-    </div>
-
 </body>
 </html>

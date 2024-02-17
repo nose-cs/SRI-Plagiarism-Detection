@@ -9,13 +9,26 @@ def upload_and_compare(request):
         form1 = DocumentoForm(request.POST, request.FILES, prefix="doc1")
         form2 = DocumentoForm(request.POST, request.FILES, prefix="doc2")
         if form1.is_valid() and form2.is_valid():
-            doc1 = form1.save()
-            doc2 = form2.save()
+            doc1_file = request.FILES.get('doc1-file', None)
+            doc2_file = request.FILES.get('doc2-file', None)
+
+            doc1 = form1.save(commit=False)
+            doc2 = form2.save(commit=False)
+
+            if doc1_file:
+                doc1.name = doc1_file.name
+            if doc2_file:
+                doc2.name = doc2_file.name
+
+            doc1.save()
+            doc2.save()
+
             return redirect('show_results', doc1_id=doc1.id, doc2_id=doc2.id)
     else:
         form1 = DocumentoForm(prefix="doc1")
         form2 = DocumentoForm(prefix="doc2")
     return render(request, 'upload_and_compare.html', {'form1': form1, 'form2': form2})
+
 
 def show_results(request, doc1_id, doc2_id):
     try:
@@ -24,7 +37,7 @@ def show_results(request, doc1_id, doc2_id):
     except Documento.DoesNotExist:
         raise Http404("Document doesn´t exists")
     
-    with open(doc1.archivo.path, 'r') as file1, open(doc2.archivo.path, 'r') as file2:
+    with open(doc1.file.path, 'r') as file1, open(doc2.file.path, 'r') as file2:
         doc1_text = file1.read()
         doc2_text = file2.read()
 
@@ -63,4 +76,4 @@ def show_results(request, doc1_id, doc2_id):
             doc2_text = doc2_text[:end] + "</span>" + doc2_text[end:]
             doc2_text = doc2_text[:start] + ("<span class='resaltado'>" if is_plagio else "<span class='resaltadoYellow'>") + doc2_text[start:]
 
-        return render(request, 'show_results.html', {'doc1_text': doc1_text, 'doc2_text': doc2_text})
+        return render(request, 'show_results.html', {'doc1_name': doc1.name, 'doc2_name': doc2.name, 'doc1_text': doc1_text, 'doc2_text': doc2_text})

@@ -4,4 +4,4 @@ from .models import Documento
 class DocumentoForm(forms.ModelForm):
     class Meta:
         model = Documento
-        fields = ('archivo', )
+        fields = ('file', )
