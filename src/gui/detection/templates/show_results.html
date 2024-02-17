@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Plagiarism Detection Results</title>
-    <link src="./font.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -20,7 +22,7 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 46%;
+            width: 45%;
             display: inline-block;
             vertical-align: top;
             padding: 20px;
