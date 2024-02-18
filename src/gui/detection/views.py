@@ -38,10 +38,10 @@ def show_results(request, doc1_id, doc2_id):
         raise Http404("Document doesn´t exists")
     
     with open(doc1.file.path, 'r') as file1, open(doc2.file.path, 'r') as file2:
-        doc1_text = file1.read()
-        doc2_text = file2.read()
+        _doc1_text = file1.read()
+        _doc2_text = file2.read()
 
-        documentos = [doc1_text, doc2_text]
+        documentos = [_doc1_text, _doc2_text]
 
         plagiarism, theme, different = detect(documentos)
 
@@ -62,6 +62,9 @@ def show_results(request, doc1_id, doc2_id):
         plagio_doc1 = join([p[0][1] for p in plagiarism], [t[0][1] for t in theme])
         plagio_doc2 = join([p[1][1] for p in plagiarism], [t[1][1] for t in theme])
 
+        doc1_text = _doc1_text
+        doc2_text = _doc2_text
+
         for pos, is_plagio in reversed(plagio_doc1):
             start = pos[0]
             end = pos[1]
@@ -76,4 +79,32 @@ def show_results(request, doc1_id, doc2_id):
             doc2_text = doc2_text[:end] + "</span>" + doc2_text[end:]
             doc2_text = doc2_text[:start] + ("<span class='resaltado'>" if is_plagio else "<span class='resaltadoYellow'>") + doc2_text[start:]
 
-        return render(request, 'show_results.html', {'doc1_name': doc1.name, 'doc2_name': doc2.name, 'doc1_text': doc1_text, 'doc2_text': doc2_text})
+        mixed_12 = {}
+
+        for doc_1, doc_2, similitud in plagiarism:
+            if doc_1[1] not in mixed_12:
+                mixed_12[doc_1[1]] = []
+            mixed_12[doc_1[1]].append((_doc2_text[doc_2[1][0] : doc_2[1][1]], "#ffcccc"))
+
+        for doc_1, doc_2, similitud in theme:
+            if doc_1[1] not in mixed_12:
+                mixed_12[doc_1[1]] = []
+            mixed_12[doc_1[1]].append((_doc2_text[doc_2[1][0] : doc_2[1][1]], "#ffff00"))
+
+        data_match_12 = [(_doc1_text[key[0] : key[1]], value) for key, value in mixed_12.items()]
+
+        mixed_21 = {}
+
+        for doc_1, doc_2, similitud in plagiarism:
+            if doc_2[1] not in mixed_21:
+                mixed_21[doc_2[1]] = []
+            mixed_21[doc_2[1]].append((_doc1_text[doc_1[1][0] : doc_1[1][1]], "#ffcccc"))
+
+        for doc_1, doc_2, similitud in theme:
+            if doc_2[1] not in mixed_21:
+                mixed_21[doc_2[1]] = []
+            mixed_21[doc_2[1]].append((_doc1_text[doc_1[1][0] : doc_1[1][1]], "#ffff00"))
+
+        data_match_21 = [(_doc2_text[key[0] : key[1]], value) for key, value in mixed_21.items()]
+
+        return render(request, 'show_results.html', {'doc1_name': doc1.name, 'doc2_name': doc2.name, 'doc1_text': doc1_text, 'doc2_text': doc2_text, 'data_match_12': data_match_12, 'data_match_21': data_match_21})

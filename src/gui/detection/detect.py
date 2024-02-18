@@ -36,5 +36,4 @@ def detect(documentos):
                             theme.append(((i, pos1), (j, pos2), similitud))
                     else:
                         different.append(((i, pos1), (j, pos2), similitud))
-                        print(similitud)
     return plagiarism, theme, different

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Plagiarism Detection Results</title>
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awe-icons.css' %}">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -46,18 +47,210 @@
                 width: 100%;
             }
         }
+
+        .tabs button.tablinks {
+            background-color: #f1f1f1;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        
+        .tabs button.tablinks:hover {
+            background-color: #ddd;
+        }
+        
+        .tabs button.tablinks.active {
+            background-color: #ccc;
+        }
+        
+        .tabcontent {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .doc-widget {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background-color: #f2f2f2;
+            border-radius: 20px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 30%;
+        }
+        
+        .doc-name {
+            color: #333;
+            font-weight: bold;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 40%;
+        }
+        
+        .doc-swap {
+            display: flex;
+            align-items: center;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        
+        .doc-swap:hover {
+            background-color: #45a049;
+        }
+        
+        .doc-name {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Chrome/Opera */
+        }
+        
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="document" id="doc1">
-            <h3>{{ doc1_name }}</h3>
-            {{ doc1_text|safe }}
-        </div>
-        <div class="document" id="doc2">
-            <h3>{{ doc2_name }}</h3>
-            {{ doc2_text|safe }}
+    <div class="tabs">
+        <button class="tablinks active" onclick="openTab(event, 'DocumentView')">Documents</button>
+        <button class="tablinks" onclick="openTab(event, 'TableView')">Match Table</button>
+    </div>
+    
+    <div id="DocumentView" class="tabcontent" style="display: inline-block;">
+        <div class="container">
+            <div class="document" id="doc1">
+                <h3>{{ doc1_name }}</h3>
+                {{ doc1_text|safe }}
+            </div>
+            <div class="document" id="doc2">
+                <h3>{{ doc2_name }}</h3>
+                {{ doc2_text|safe }}
+            </div>
         </div>
     </div>
+    
+    <div id="TableView" class="tabcontent">
+        <div class="doc-widget" style="margin-top: 60px;">
+            <div class="doc-name" id="leftDoc">{{ doc1_name }}</div>
+            <button class="doc-swap" onclick="swapDocs()"><i class="fas fa-exchange-alt"></i></button>
+            <div class="doc-name" id="rightDoc">{{ doc2_name }}</div>
+        </div>
+        
+        <table id="miTabla" style="margin-top: 30px;">
+            <thead>
+                <tr>
+                    <th id="headerLeftDoc">{{ doc1_name }}</th>
+                    <th id="headerRightDoc">{{ doc2_name }}</th>
+                    <th>Match</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = tabName == "DocumentView" ? "inline-block" : "block";
+            evt.currentTarget.className += " active";
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("defaultOpen").click();
+        });
+    </script>
+    
+    {{ data_match_12|json_script:"dataMatch12" }}
+    {{ data_match_21|json_script:"dataMatch21" }}
+
+    <script>
+        let currentDataKey = 'dataMatch12';
+
+        function reloadTable(data) {
+            console.log(data)
+            const tbody = document.querySelector("#miTabla tbody");
+            tbody.innerHTML = "";
+
+            data.forEach(item => {
+                const [doc, relations] = item;
+                relations.forEach(([phrase, color], index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${index === 0 ? doc : ''}</td>
+                        <td>${phrase}</td>
+                        <td style="background-color: ${color};"></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                const row = document.createElement("tr");
+                row.className = "separator";
+                row.innerHTML = '<td colspan="3"></td>';
+                tbody.appendChild(row);
+            });
+        }
+
+        function swapDocs() {
+            var leftDoc = document.getElementById('leftDoc');
+            var rightDoc = document.getElementById('rightDoc');
+            var tempDoc = leftDoc.textContent;
+            leftDoc.textContent = rightDoc.textContent;
+            rightDoc.textContent = tempDoc;
+            
+            var headerLeftDoc = document.getElementById('headerLeftDoc');
+            var headerRightDoc = document.getElementById('headerRightDoc');
+            var tempHeader = headerLeftDoc.textContent;
+            headerLeftDoc.textContent = headerRightDoc.textContent;
+            headerRightDoc.textContent = tempHeader;
+
+            currentDataKey = (currentDataKey === 'dataMatch12') ? 'dataMatch21' : 'dataMatch12';
+            const currentData = JSON.parse(document.getElementById(currentDataKey).textContent);
+            reloadTable(currentData);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialData = JSON.parse(document.getElementById('dataMatch12').textContent);
+            reloadTable(initialData);
+        });
+    </script>
+
 </body>
 </html>
