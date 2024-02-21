@@ -18,6 +18,14 @@ Luego de descargar e instalar las dependencias necesarias expresadas en el archi
 
 ```python spacy download en_core_web_md```  
 
+Antes de la primera ejecución deberá ejecutar en la dirección ```src/gui``` el siguiente comando:  
+
+```python manage migrate```
+
+Luego cada vez que se quiera correr el servidor:  
+
+```python manage runserver```
+
 Durante la primera ejecución se descargará de manera automática un modelo de ```Bert```, más adelante explicaremos que es.
 
 # Informe de Desarrollo de Solución para Detección de Plagio entre Documentos
