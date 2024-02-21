@@ -14,9 +14,7 @@ El idioma del texto contenidos en los documentos debe ser ```inglés```, y el fo
 
 # Ejecutar el proyecto
 
-Luego de descargar e instalar las dependencias necesarias expresadas en el archivo ```requeriments.txt``` deberá descargar este modelo de la librería ```spacy```, con el siguiente comando en la terminal:  
-
-```python spacy download en_core_web_md```  
+La interfaz de usuario está desarrollada en Django, un framework de desarrollo web de alto nivel en Python.  
 
 Antes de la primera ejecución deberá ejecutar en la dirección ```src/gui``` el siguiente comando:  
 
@@ -26,7 +24,7 @@ Luego cada vez que se quiera correr el servidor:
 
 ```python manage runserver```
 
-Durante la primera ejecución se descargará de manera automática un modelo de ```Bert```, más adelante explicaremos que es.
+**Nota**: Durante la primera ejecución se descargará de manera automática un modelo de ```Bert```, más adelante explicaremos que es.
 
 # Informe de Desarrollo de Solución para Detección de Plagio entre Documentos
 
@@ -80,3 +78,21 @@ Para identificar específicamente las partes plagiadas de un texto, empleamos sp
 ## Conclusión
 
 El desarrollo de esta solución de detección de plagio subraya la importancia de los avances en PLN y aprendizaje automático. A través de un enfoque iterativo, mejorando desde promedios simples de word embedding hasta la implementación de tecnologías de vanguardia como BERT, hemos establecido un método altamente efectivo y preciso para identificar plagios. Este progreso no solo mejora la detección de plagio sino que también contribuye al campo del PLN, demostrando el potencial de las técnicas de modelado de lenguaje avanzadas para comprender y analizar el texto a un nivel profundamente contextualizado.
+
+# Problemas y Soluciones
+
+**Problema**: la precisión de detección correcta de plagio de este algoritmo es buena, pero por supuesto todavía hay margen de error.
+
+**Solución**: a medida que avanza el tiempo se mejoran y surgen nuevas técnicas de **Machine Learning**, las cuales pudieran incorporarse a este proyecto para mejorar los resultados.
+
+#
+
+**Problema**: se trabaja el texto solo teniendo en cuenta los token, y su contexto, lo cual es efectivo pero no se analiza características especiales del lenguaje.
+
+**Solución**: implementar heurísticas específicas para el lenguaje como por ejemplo: realizar un análisis sintáctico del texto, para extraer el sujeto, predicado, y complementos circunstanciales; y realizar comparaciones.
+
+#
+
+**Problema**: la detección de plagio por secciones se hace apartir de oraciones; si se toman dos o más oraciones y se plagean en una sola, puede llevar a una mala detección por parte del algoritmo.
+
+**Solución**: este problema se intentó resolver usando una ventana deslizante por ambos textos, pero esto tiene una alta complejidad temporal por lo tanto no es factible, y se debe seguir buscando otra solución.
