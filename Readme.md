@@ -10,7 +10,12 @@ Se requiere que dado dos documentos se prevea la probabilidad de plagio entre am
 
 # Consideraciones
 
-El idioma del texto contenidos en los documentos debe ser ```inglés```, y el formato debe ser ```.txt```
+El idioma del texto contenidos en los documentos debe ser ```inglés```, y el formato debe ser ```.txt```  
+
+## Especificaciones Visuales
+
+Se suben dos archivos de texto, y se muestran ambos textos en paralelo con las secciones de plagio y temática señaladas usando rojo claro de fondo para el plagio y amarillo para la temática.  
+Se cuenta con otra ventana que es para ver en específico los resultados por cada sección de un documento, comparados con las secciones del otro documento.
 
 # Ejecutar el proyecto
 
